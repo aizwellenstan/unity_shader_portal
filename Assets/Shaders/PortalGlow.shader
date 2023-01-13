@@ -1,13 +1,15 @@
-﻿Shader "Aiz/Portal/PortalMask"
+﻿Shader "Aiz/Portal/PortalGlow"
 {
     Properties
     {
-        _Mask ("Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "white" {}
+        _Color ("Color", Color) = (1, 1, 1, 1)
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Transparent"}
-        Blend SrcAlpha OneMinusSrcAlpha
+        Tags { "RenderType"="Opaque" "Queue"="Transparent+4"}
+        ZWrite Off
+        Blend SrcAlpha One
         AlphaToMask On
         LOD 100
 
@@ -34,14 +36,15 @@
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _Mask;
-            float4 _Mask_ST;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float4 _Color;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _Mask);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -49,10 +52,10 @@
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_Mask, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return float4(0, 0, 0, col.a);
+                return col * _Color;
             }
             ENDCG
         }

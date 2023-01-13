@@ -1,4 +1,4 @@
-﻿Shader "Portal/PortalStars"
+﻿Shader "Aiz/Portal/PortalStars"
 {
     Properties
     {

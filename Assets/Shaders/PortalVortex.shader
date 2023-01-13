@@ -1,4 +1,4 @@
-﻿Shader "Portal/PortalVortex"
+﻿Shader "Aiz/Portal/PortalVortex"
 {
     Properties
     {
